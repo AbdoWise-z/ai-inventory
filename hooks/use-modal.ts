@@ -1,9 +1,9 @@
 import {create} from "zustand";
-import {Channel, ChannelType, Server} from "@prisma/client";
 
 
 export enum ModalType {
   CREATE_SERVER,
+  ADD_ITEM,
   INVITE,
   EDIT_SERVER,
   MANAGE_MEMBERS,
@@ -19,11 +19,7 @@ export enum ModalType {
 }
 
 interface ModelData {
-  server?: Server,
-  channel?: Channel,
-  channelType?: ChannelType,
-  apiUrl?: string,
-  query?: Record<string , any>,
+
 }
 
 interface ModalStore {

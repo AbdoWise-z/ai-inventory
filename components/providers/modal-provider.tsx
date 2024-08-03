@@ -4,8 +4,9 @@ import React, {useEffect} from 'react';
 import {CreateServerModal} from "@/components/modals/create-server-modal";
 import {InviteModal} from "@/components/modals/invite-modal";
 import {DeleteMessageModel} from "@/components/modals/delete-message-modal";
+import {AddItemModal} from "@/components/modals/add-item-modal";
 
-const ModelProvider = () => {
+const ModalProvider = () => {
   const [isMounted, setIsMounted] = React.useState(false);
   useEffect(() => {
     setIsMounted(true);
@@ -15,11 +16,9 @@ const ModelProvider = () => {
 
   return (
     <>
-      <CreateServerModal closable/>
-      <InviteModal />
-      <DeleteMessageModel />
+      <AddItemModal/>
     </>
   );
 };
 
-export default ModelProvider;
+export default ModalProvider;
