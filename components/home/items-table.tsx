@@ -121,7 +121,13 @@ export const columns: ColumnDef<StatfulInventoryItem>[] = [
               <Edit3 size={16} className={"mr-4"}/>
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem className={"text-rose-700"}>
+            <DropdownMenuItem className={"text-rose-700"} onClick={() => {
+              modal.open(ModalType.DELETE_ITEMS , {
+                items: [
+                  row.original
+                ],
+              })
+            }}>
               <Trash2 size={16} className={"mr-4"}/>
               Delete
             </DropdownMenuItem>
