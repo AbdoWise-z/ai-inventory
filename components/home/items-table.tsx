@@ -92,6 +92,7 @@ export const columns: ColumnDef<StatfulInventoryItem>[] = [
     cell: ({ row }) => {
       const data = row.original
 
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const modal = useModal();
 
       return (
