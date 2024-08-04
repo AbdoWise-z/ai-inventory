@@ -36,7 +36,7 @@ import {useEffect} from "react";
 const formSchema = z.object({
   name: z.string().min(1 , {
     message: "Server name is required",
-  }),
+  }).max(100),
   count: z.coerce.number({
     message: "quantity is required",
   }).int({

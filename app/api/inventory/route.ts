@@ -16,6 +16,10 @@ export const POST = async (req: Request) => {
       return new NextResponse("Invalid input", {status: 402});
     }
 
+    if (name.length > 100) {
+      return new NextResponse("Invalid input", {status: 402});
+    }
+
     const exists = await db.inventoryItem.findFirst({
       where: {
         name: name,
@@ -82,6 +86,10 @@ export const PATCH = async (req: Request) => {
     }
 
     if (!id || !name || !count || count < 1){
+      return new NextResponse("Invalid input", {status: 402});
+    }
+
+    if (name.length > 100) {
       return new NextResponse("Invalid input", {status: 402});
     }
 
