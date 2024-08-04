@@ -1,25 +1,24 @@
 import {create} from "zustand";
+import {StatfulInventoryItem} from "@/components/providers/inventory-data-provider";
 
 
 export enum ModalType {
   CREATE_SERVER,
   ADD_ITEM,
+  EDIT_ITEM,
+  DELETE_ITEMS,
   INVITE,
-  EDIT_SERVER,
-  MANAGE_MEMBERS,
-  CREATE_CHANNEL,
-  LEAVE_SERVER,
-  DELETE_SERVER,
-  DELETE_CHANNEL,
-  EDIT_CHANNEL,
-  MESSAGE_FILE,
   DELETE_MESSAGE
 
   //TODO: add other types
 }
 
-interface ModelData {
 
+interface ModelData {
+  id?: string;
+  name?: string;
+  count?: number;
+  items?: StatfulInventoryItem[];
 }
 
 interface ModalStore {

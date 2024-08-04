@@ -30,15 +30,16 @@ import axios from "axios";
 import {zodResolver} from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import {ModalType, useModal} from "@/hooks/use-modal";
+import {useInventory} from "@/components/providers/inventory-data-provider";
 
 const formSchema = z.object({
   name: z.string().min(1 , {
     message: "Server name is required",
   }),
-  count: z.number({
-    message: "Count is required",
+  count: z.coerce.number({
+    message: "quantity is required",
   }).int({
-    message: "Must be number",
+    message: "Must be an integer number",
   }).min(1,{
     message: "Must be greater than one"
   }),
@@ -49,6 +50,7 @@ export const AddItemModal = () => {
   const router = useRouter();
 
   const modal = useModal();
+  const inventory = useInventory();
   const isOpen = modal.isOpen && modal.type == ModalType.ADD_ITEM;
 
   const form = useForm({
@@ -59,17 +61,12 @@ export const AddItemModal = () => {
     }
   });
 
-
   const isLoading = form.formState.isSubmitting;
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try{
-      await axios.post("/api/inventory" , values);
-      form.reset();
-      router.refresh();
-      modal.close();
-    } catch (err){
-      console.log(err);
-    }
+    inventory.addItem(values["name"] , values["count"]);
+    form.reset();
+    modal.close();
   };
 
   const handleClose = () => {
@@ -122,6 +119,7 @@ export const AddItemModal = () => {
                         disabled={isLoading}
                         className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0 space-x-0 space-y-0 px"
                         placeholder="enter a positive number"
+                        type={"number"}
                         {...field}
                       />
                     </FormControl>

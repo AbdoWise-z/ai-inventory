@@ -53,6 +53,7 @@ export const columns: ColumnDef<StatfulInventoryItem>[] = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        disabled={row.original.state != "Idle"}
       />
     ),
     enableSorting: false,
@@ -71,26 +72,32 @@ export const columns: ColumnDef<StatfulInventoryItem>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
+    cell: ({ row }) => {
+      const data = row.original;
+      return <div className={cn("pl-4" , data.state != "Idle" && "opacity-30")}>{row.getValue("name")}</div>
+    },
   },
   {
     accessorKey: "count",
     header: () => <div className="text-right">Amount</div>,
     cell: ({ row }) => {
+      const data = row.original
       const amount = parseInt(row.getValue("count"))
-      return <div className="text-right font-medium">{amount}</div>
+      return <div className={cn("text-right font-medium" , data.state != "Idle" && "opacity-30")}>{amount}</div>
     },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
+      const data = row.original
+
+      const modal = useModal();
 
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="h-8 w-8 p-0 ml-auto" disabled={data.state != "Idle"}>
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
@@ -98,12 +105,18 @@ export const columns: ColumnDef<StatfulInventoryItem>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(`${data.id}`)}
             >
               Copy ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className={"text-indigo-500"}>
+            <DropdownMenuItem className={"text-indigo-500"} onClick={() => {
+              modal.open(ModalType.EDIT_ITEM , {
+                id: `${data.id}`,
+                name: data.name,
+                count: data.count,
+              })
+            }}>
               <Edit3 size={16} className={"mr-4"}/>
               Edit
             </DropdownMenuItem>
@@ -148,6 +161,18 @@ export function InventoryItemsTable() {
     },
   });
 
+  const deleteSelected = () => {
+    const selected = table.getSelectedRowModel();
+    let ids = [] as StatfulInventoryItem[];
+    for (const item of selected.rows){
+      ids.push(item.original);
+    }
+    ids.filter((i) => i.id != -1);
+    modal.open(ModalType.DELETE_ITEMS , {
+      items: ids,
+    });
+  };
+
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
@@ -162,7 +187,7 @@ export function InventoryItemsTable() {
           />
 
 
-          <Button variant="outline" disabled={!(table.getIsSomePageRowsSelected() || table.getIsAllPageRowsSelected())}>
+          <Button variant="outline" disabled={!(table.getIsSomePageRowsSelected() || table.getIsAllPageRowsSelected())} onClick={deleteSelected}>
             <Trash2 size={16} className={"mr-4"}/>
             Remove Selected
           </Button>
@@ -213,7 +238,7 @@ export function InventoryItemsTable() {
             {(table.getRowModel().rows?.length) ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
+                  key={row.original.id != -1 ? row.original.id : row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (

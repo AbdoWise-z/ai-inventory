@@ -1,10 +1,10 @@
 "use client";
 
 import React, {useEffect} from 'react';
-import {CreateServerModal} from "@/components/modals/create-server-modal";
-import {InviteModal} from "@/components/modals/invite-modal";
-import {DeleteMessageModel} from "@/components/modals/delete-message-modal";
+
 import {AddItemModal} from "@/components/modals/add-item-modal";
+import {EditItemModal} from "@/components/modals/edit-item-modal";
+import {DeleteItemsModal} from "@/components/modals/delete-items-modal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = React.useState(false);
@@ -17,6 +17,8 @@ const ModalProvider = () => {
   return (
     <>
       <AddItemModal/>
+      <EditItemModal />
+      <DeleteItemsModal />
     </>
   );
 };
