@@ -1,7 +1,6 @@
 import React from 'react';
 import {currentUserProfile} from "@/lib/user-profile";
 import {InventoryItemsTable} from "@/components/home/items-table";
-import {Button} from "@/components/ui/button";
 
 const Page = async () => {
   const user = await currentUserProfile(true);

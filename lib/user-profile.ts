@@ -11,7 +11,7 @@ export const currentUserProfile = async (redirect?: boolean) => {
     return null;
   }
 
-  const profile = await db.profile.findFirst({
+  const profile = await db.profile.findUnique({
     where: {
       userId: user.id,
     }
@@ -21,14 +21,25 @@ export const currentUserProfile = async (redirect?: boolean) => {
     return profile;
   }
 
-  const newProfile = await db.profile.create({
-    data: {
-      userId: user.id,
-      name: `${user.firstName} ${user.lastName}`,
-      imageUrl: user.imageUrl,
-      email: user.emailAddresses[0].emailAddress,
-    }
-  })
+  console.log("Creating user with ID: " + user.id);
 
-  return newProfile;
+  try {
+    const newProfile = await db.profile.create({
+      data: {
+        userId: user.id,
+        name: `${user.firstName} ${user.lastName}`,
+        imageUrl: user.imageUrl,
+        email: user.emailAddresses[0].emailAddress,
+      }
+    })
+    return newProfile;
+  } catch (error){
+    return (await db.profile.findUnique({
+      where: {
+        userId: user.id,
+      }
+    }));
+  }
+
+
 }
