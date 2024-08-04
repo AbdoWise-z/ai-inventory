@@ -11,7 +11,7 @@ export const currentUserProfile = async (redirect?: boolean) => {
     return null;
   }
 
-  const profile = await db.profile.findUnique({
+  const profile = await db.profile.findFirst({
     where: {
       userId: user.id,
     }
