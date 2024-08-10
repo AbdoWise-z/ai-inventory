@@ -2,7 +2,7 @@ import {NextResponse} from "next/server";
 import {currentUserProfile} from "@/lib/user-profile";
 import { Message } from "@prisma/client";
 import {db} from "@/lib/db";
-import {getAIResponseTo} from "@/app/api/chat/helper";
+import {getAIResponseTo} from "@/app/api/chat/helper-together-ai";
 
 const DefaultPatchSize = 20;
 const MaxPatchSize = 40;
@@ -86,9 +86,9 @@ export async function POST(req: Request, {
       }
     })
 
-    // get the last 20 messages
+    // get the last 8 messages
     const messages = await db.message.findMany({
-      take: 20,
+      take: 8,
       where: {
         senderId: profile.id,
       },
@@ -114,12 +114,8 @@ export async function POST(req: Request, {
       const json = JSON.parse(aiRes);
       aiResFinal = json["task_discription"];
       task = json["task"];
-      console.log(aiResFinal);
-      console.log(task);
     } catch (e){
       aiResFinal = aiRes;
-      console.log(aiRes);
-      console.log(e);
     }
 
     const aiMessage = await db.message.create({

@@ -7,6 +7,9 @@ import {useChatContext} from "@/components/ai/chat/chat-provider";
 import {useChatScroll} from "@/hooks/use-chat-scroll";
 import {Message} from "@prisma/client";
 import ChatItem from "@/components/ai/chat/chat-item";
+import LoadingAnimation from "@/components/ai/chat/loading-animation";
+import {cn} from "@/lib/utils";
+import ReactMarkdown from "react-markdown";
 
 const ChatArea = () => {
 
@@ -94,17 +97,25 @@ const ChatArea = () => {
           }
         </div>
 
-        { chatContext.isSendingMessage && (
-          <p>
-            AI is thinking ..
-          </p>
+        { (chatContext.isSendingMessage) && (
+          <div className={"flex w-full group mt-2"}>
+            <div className={cn(
+              "relative group flex w-fit rounded-b-xl max-w-[calc(95% - 24px)] bg-neutral-200 rounded-tr-xl justify-center px-2 py-2",
+            )}>
+              {/*<p className="mr-2 content-center">*/}
+              {/*  AI is thinking*/}
+              {/*</p>*/}
+              <LoadingAnimation className={"w-10 h-10"}/>
+            </div>
+          </div>
         )}
 
         <div ref={botRef}/>
       </div>
-      <ChatInput />
+      <ChatInput/>
     </>
-  );
+  )
+    ;
 };
 
 export default ChatArea;

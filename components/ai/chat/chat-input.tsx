@@ -10,6 +10,8 @@ import {useRouter} from "next/navigation";
 import {useAutoResize} from "@/hooks/use-auto-resize";
 import {Form, FormControl, FormField, FormItem} from "@/components/ui/form";
 import {useChatContext} from "@/components/ai/chat/chat-provider";
+import {Button} from "@/components/ui/button";
+import {Send, SendHorizonal} from "lucide-react";
 
 
 const formSchema = z.object({
@@ -58,8 +60,7 @@ const ChatInput = () => {
             return (
               <FormItem>
                 <FormControl>
-                  <div className="relative m-1">
-
+                  <div className="relative m-1 p-2">
                     <textarea
                       onInput={onInput}
                       onKeyDown={handleKeyDown}
@@ -67,17 +68,23 @@ const ChatInput = () => {
                       disabled={isLoading}
                       rows={1}
                       ref={ref as any}
-                      className="px-2 py-3 bg-zinc-200/90 dark:bg-zinc-700/75
+                      className="pl-2 pr-12 py-3 bg-zinc-200/90 dark:bg-zinc-700/75
                       border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0
                       text-zinc-600 dark:text-zinc-200 w-full rounded-md resize-none
                       max-h-[300px]"
                       placeholder={`Message the AI`}
                     />
+
+                    <div className="absolute right-2 top-2 py-[3px] pr-2 w-fit h-full">
+                      <Button size={"icon"} variant={"ghost"} type={"submit"}>
+                        <SendHorizonal />
+                      </Button>
+                    </div>
                   </div>
                 </FormControl>
               </FormItem>
-              )
-            }}
+            )
+          }}
         />
       </form>
     </Form>
