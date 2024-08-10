@@ -1,7 +1,6 @@
 import {currentUserProfile} from "@/lib/user-profile";
 import {NextResponse} from "next/server";
 import {db} from "@/lib/db";
-import {id} from "postcss-selector-parser";
 
 export const POST = async (req: Request) => {
   try {
@@ -19,15 +18,29 @@ export const POST = async (req: Request) => {
     if (name.length > 100) {
       return new NextResponse("Invalid input", {status: 402});
     }
+    
+    try {
+      const item = await db.inventoryItem.create({
+        data: {
+          ownerId: profile.id,
+          name: name,
+          count: count,
+        }
+      });
 
-    const exists = await db.inventoryItem.findFirst({
-      where: {
-        name: name,
-        ownerId: profile.id,
+      return NextResponse.json(item);
+    } catch (e){
+      const exists = await db.inventoryItem.findFirst({
+        where: {
+          name: name,
+          ownerId: profile.id,
+        }
+      });
+
+      if (!exists){
+        return new NextResponse("Internal Error" , {status: 500, statusText: "Internal Server Error"});
       }
-    });
 
-    if (exists){
       const item = await db.inventoryItem.update({
         where: {
           id: exists.id,
@@ -39,16 +52,6 @@ export const POST = async (req: Request) => {
 
       return NextResponse.json(item);
     }
-
-    const item = await db.inventoryItem.create({
-      data: {
-        ownerId: profile.id,
-        name: name,
-        count: count,
-      }
-    });
-
-    return NextResponse.json(item);
   } catch (error){
     console.log("POST [api/inventory]" , error);
     return new NextResponse("Internal Error" , {status: 500, statusText: "Internal Server Error"});

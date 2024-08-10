@@ -3,7 +3,7 @@
 import React, {Fragment, useRef} from 'react';
 import ChatInput from "@/components/ai/chat/chat-input";
 import {Loader2, ServerCrash} from "lucide-react";
-import {useChatContext} from "@/components/ai/chat/chat-provider";
+import {useChatContext} from "@/components/providers/chat-provider";
 import {useChatScroll} from "@/hooks/use-chat-scroll";
 import {Message} from "@prisma/client";
 import ChatItem from "@/components/ai/chat/chat-item";

@@ -99,6 +99,7 @@ const InventoryDataProvider = (
           if (item.name === name) {
             item.id = res.data.id;
             item.state = "Idle";
+            item.count = res.data.count;
           }
           return item;
         })

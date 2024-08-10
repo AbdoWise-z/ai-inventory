@@ -6,7 +6,7 @@ import {Bot, BotMessageSquare, X} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 import {Separator} from "@/components/ui/separator";
 import ChatArea from "@/components/ai/chat/chat-area";
-import {useChatContext} from "@/components/ai/chat/chat-provider";
+import {useChatContext} from "@/components/providers/chat-provider";
 
 const ChatButton = () => {
   const [isOpen, setIsOpen] = React.useState(false);

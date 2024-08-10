@@ -125,6 +125,45 @@ const ChatProvider = (
     });
   }
 
+  const performTask = (task: any) => {
+    console.log("Performing Task: " + JSON.stringify(task));
+    if (task){
+      if (task.action == 'add'){
+        const name = task.itemName;
+        const count = task.itemCount ?? 1;
+        inventory.addItem(name, count);
+      } else if (task.action == 'edit'){
+        const name = task.itemName;
+        const item = inventory.data.find((item: any) => item.name == name);
+        if (item){
+          const newCount = task.newCount ?? item?.count;
+          const newName = task.newName ?? name;
+          inventory.editItem(`${item.id}` , newName , newCount);
+        }
+      } else if (task.action == 'remove'){
+        const name = task.itemName;
+        const item = inventory.data.find((item: any) => item.name == name);
+        if (item) {
+          const dec = task.newCount ?? item.count;
+          const newCount = item.count - dec;
+          if (newCount <= 0){
+            inventory.deleteItem([item]);
+          } else {
+            inventory.editItem(`${item.id}` , name , newCount);
+          }
+        }
+      } else {
+        if (!task.action){
+          for (const mTask of task){
+            performTask(mTask);
+          }
+        } else {
+          console.log("unknown task:" + task.action);
+        }
+      }
+    }
+  }
+
   const sendMessage = async (message: string) => {
 
     try {
@@ -153,34 +192,7 @@ const ChatProvider = (
       updateLoadingMessage(data.userMessage);
       addMessageToQuery(data.AiResponse);
 
-      if (data.task){
-        const task = data.task;
-        if (task.action == 'add'){
-          const name = task.itemName;
-          const count = task.itemCount ?? 1;
-          inventory.addItem(name, count);
-        } else if (task.action == 'edit'){
-          const name = task.itemName;
-          const item = inventory.data.find((item: any) => item.name == name);
-          if (item){
-            const newCount = task.newCount ?? item?.count;
-            const newName = task.newName ?? name;
-            inventory.editItem(`${item.id}` , newName , newCount);
-          }
-        } else if (task.action == 'remove'){
-          const name = task.itemName;
-          const item = inventory.data.find((item: any) => item.name == name);
-          if (item) {
-            const dec = task.newCount ?? item.count;
-            const newCount = item.count - dec;
-            if (newCount <= 0){
-              inventory.deleteItem([item]);
-            } else {
-              inventory.editItem(`${item.id}` , name , newCount);
-            }
-          }
-        }
-      }
+      performTask(data.task);
 
       setIsSendingMessage(false);
       return true;

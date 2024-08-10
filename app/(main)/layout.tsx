@@ -5,7 +5,7 @@ import InventoryDataProvider from "@/components/providers/inventory-data-provide
 import ModalProvider from "@/components/providers/modal-provider";
 import {TooltipProvider} from "@/components/ui/tooltip";
 import ChatButton from "@/components/ai/chat-button";
-import ChatProvider from "@/components/ai/chat/chat-provider";
+import ChatProvider from "@/components/providers/chat-provider";
 import QueryProvider from "@/components/providers/query-provider";
 
 const Layout = async (

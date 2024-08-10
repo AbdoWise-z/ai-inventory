@@ -9,7 +9,7 @@ import axios from "axios";
 import {useRouter} from "next/navigation";
 import {useAutoResize} from "@/hooks/use-auto-resize";
 import {Form, FormControl, FormField, FormItem} from "@/components/ui/form";
-import {useChatContext} from "@/components/ai/chat/chat-provider";
+import {useChatContext} from "@/components/providers/chat-provider";
 import {Button} from "@/components/ui/button";
 import {Send, SendHorizonal} from "lucide-react";
 

@@ -109,11 +109,13 @@ export async function POST(req: Request, {
     }) ?? "AI generation failed, please try again";
 
     let aiResFinal = "";
-    let task;
+    let task = [];
     try {
-      const json = JSON.parse(aiRes);
-      aiResFinal = json["task_discription"];
-      task = json["task"];
+      const taskArray = JSON.parse(aiRes);
+      for (const mTask of taskArray) {
+        task.push(mTask.task);
+        aiResFinal += mTask.task_description + "\n\n";
+      }
     } catch (e){
       aiResFinal = aiRes;
     }
@@ -130,7 +132,7 @@ export async function POST(req: Request, {
       {
         userMessage: userMessage,
         AiResponse: aiMessage,
-        task: task ?? null,
+        task: task,
       }
     );
   } catch (error){
