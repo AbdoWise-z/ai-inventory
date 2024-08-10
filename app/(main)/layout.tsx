@@ -4,6 +4,9 @@ import {currentUserProfile} from "@/lib/user-profile";
 import InventoryDataProvider from "@/components/providers/inventory-data-provider";
 import ModalProvider from "@/components/providers/modal-provider";
 import {TooltipProvider} from "@/components/ui/tooltip";
+import ChatButton from "@/components/ai/chat-button";
+import ChatProvider from "@/components/ai/chat/chat-provider";
+import QueryProvider from "@/components/providers/query-provider";
 
 const Layout = async (
   {
@@ -20,6 +23,11 @@ const Layout = async (
           <main className="h-full flex-1">
             {children}
           </main>
+          <QueryProvider>
+            <ChatProvider>
+              <ChatButton />
+            </ChatProvider>
+          </QueryProvider>
         </div>
       </InventoryDataProvider>
     </TooltipProvider>

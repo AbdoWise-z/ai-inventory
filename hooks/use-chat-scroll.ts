@@ -5,7 +5,7 @@ type ChatScrollProps = {
   bottomRef: React.RefObject<HTMLDivElement>;
   shouldLoadMore: boolean;
   loadMore: () => void;
-  count: number;
+  trigger: number;
 }
 
 export const useChatScroll = (
@@ -14,7 +14,7 @@ export const useChatScroll = (
     bottomRef,
     shouldLoadMore,
     loadMore,
-    count
+    trigger,
   } : ChatScrollProps
 ) => {
   const [isInitiated, setIsInitiated] = React.useState(false);
@@ -57,5 +57,5 @@ export const useChatScroll = (
         })
       }, 100);
     }
-  } , [bottomRef , chatRef , count , isInitiated]);
+  } , [bottomRef , chatRef , isInitiated , trigger]);
 }

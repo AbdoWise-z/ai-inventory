@@ -2,7 +2,7 @@
 
 import React from 'react';
 import SideNav, {SidebarItem} from "@/components/nav/side-nav";
-import {FileQuestion, LayoutDashboard, LogOut} from "lucide-react";
+import {Bot, FileQuestion, LayoutDashboard, LogOut} from "lucide-react";
 import {usePathname, useRouter} from "next/navigation";
 import {Separator} from "@/components/ui/separator";
 
@@ -20,7 +20,7 @@ const SideNavContainer = (
   return (
     <SideNav username={username} userEmail={userEmail}>
       <SidebarItem icon={<LayoutDashboard size={20}/>} text={"Dashboard"} active={pathName.endsWith("/home")} alert={false} action={"Nav"} path={"/home"}/>
-      <SidebarItem icon={<FileQuestion size={20}/>} text={"AI Suggestions"} active={pathName.endsWith("/ai")} alert={false} action={"Nav"} path={"/ai"}/>
+      <SidebarItem icon={<Bot size={20}/>} text={"AI Suggestions"} active={pathName.endsWith("/ai")} alert={false} action={"Nav"} path={"/ai"}/>
       <Separator className="w-full h-1" />
     </SideNav>
   );
