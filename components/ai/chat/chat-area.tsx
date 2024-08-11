@@ -1,6 +1,6 @@
 "use client";
 
-import React, {Fragment, useRef} from 'react';
+import React, {createContext, Fragment, useContext, useRef, useState} from 'react';
 import ChatInput from "@/components/ai/chat/chat-input";
 import {Loader2, ServerCrash} from "lucide-react";
 import {useChatContext} from "@/components/providers/chat-provider";
@@ -9,11 +9,22 @@ import {Message} from "@prisma/client";
 import ChatItem from "@/components/ai/chat/chat-item";
 import LoadingAnimation from "@/components/ai/chat/loading-animation";
 import {cn} from "@/lib/utils";
-import ReactMarkdown from "react-markdown";
+
+type ChatAreaContextProps = {
+  TriggerSizeChanged: () => void;
+}
+
+const ChatAreaContext = createContext<ChatAreaContextProps>({
+  TriggerSizeChanged: () => {},
+});
+
+export const useChatResize = () => useContext(ChatAreaContext);
 
 const ChatArea = () => {
 
   const chatContext = useChatContext();
+
+  const [triggerValue , setTriggerValue] = useState(0);
 
   const charRef = useRef<HTMLDivElement>(null);
   const botRef = useRef<HTMLDivElement>(null);
@@ -23,7 +34,7 @@ const ChatArea = () => {
     bottomRef: botRef,
     shouldLoadMore: chatContext.canLoadMore,
     loadMore: chatContext.loadMore,
-    trigger: chatContext.data?.pages?.[0].items?.length ?? 0,
+    trigger: triggerValue,
   });
 
   if (chatContext.state == 'error') {
@@ -50,6 +61,10 @@ const ChatArea = () => {
         </p>
       </div>
     );
+  }
+
+  const mTriggerResize = () => {
+    setTriggerValue((v) => v + 1);
   }
 
   return (
@@ -80,22 +95,26 @@ const ChatArea = () => {
             )}
           </div>
         )}
-        <div className="flex flex-col-reverse">
-          {
-            chatContext.data?.pages?.map((page, pageIndex) => (
-              <Fragment key={pageIndex}>
-                {page.items.map((item: Message, itemIdx : number) => (
-                  <ChatItem
-                    key={item.id}
-                    content={item.content}
-                    role={item.role}
-                    animate={item.role == "AI" && pageIndex == 0 && itemIdx == 0}
-                  />
-                ))}
-              </Fragment>
-            ))
-          }
-        </div>
+        <ChatAreaContext.Provider value={{
+          TriggerSizeChanged: mTriggerResize,
+        }}>
+          <div className="flex flex-col-reverse">
+            {
+              chatContext.data?.pages?.map((page, pageIndex) => (
+                <Fragment key={pageIndex}>
+                  {page.items.map((item: Message, itemIdx : number) => (
+                    <ChatItem
+                      key={item.id}
+                      content={item.content}
+                      role={item.role}
+                      animate={item.role == "AI" && pageIndex == 0 && itemIdx == 0}
+                    />
+                  ))}
+                </Fragment>
+              ))
+            }
+          </div>
+        </ChatAreaContext.Provider>
 
         { (chatContext.isSendingMessage) && (
           <div className={"flex w-full group mt-2"}>
@@ -105,7 +124,7 @@ const ChatArea = () => {
               {/*<p className="mr-2 content-center">*/}
               {/*  AI is thinking*/}
               {/*</p>*/}
-              <LoadingAnimation className={"w-10 h-10"}/>
+              <LoadingAnimation className={"w-8 h-8 mx-4"}/>
             </div>
           </div>
         )}

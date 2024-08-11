@@ -37,7 +37,6 @@ export const useChatScroll = (
   React.useEffect(() => {
     const bot = bottomRef?.current;
     const top = chatRef?.current;
-
     const shouldAutoScroll = () => {
       if (!isInitiated && bot){
         setIsInitiated(true);
@@ -46,7 +45,6 @@ export const useChatScroll = (
 
       if (!top) return false;
       const distance = top.scrollHeight - top.clientHeight - top.scrollHeight;
-
       return distance <= 100;
     }
 

@@ -108,14 +108,16 @@ export async function POST(req: Request, {
       inventory: inv,
     }) ?? "AI generation failed, please try again";
 
-    let aiResFinal = "";
+    let aiResFinal;
     let tasks = [];
     try {
       const response = JSON.parse(aiRes);
       tasks = response.tasks;
       aiResFinal = response.response;
     } catch (e){
-      aiResFinal = "*Internal Error* has happened, please try again";
+      console.error(e);
+      console.error(aiRes);
+      aiResFinal = "**Internal Error** has happened, please try again.";
     }
 
     const aiMessage = await db.message.create({

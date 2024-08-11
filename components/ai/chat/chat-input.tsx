@@ -4,18 +4,15 @@ import * as z from 'zod';
 import React from 'react';
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import qs from 'query-string';
-import axios from "axios";
-import {useRouter} from "next/navigation";
 import {useAutoResize} from "@/hooks/use-auto-resize";
 import {Form, FormControl, FormField, FormItem} from "@/components/ui/form";
 import {useChatContext} from "@/components/providers/chat-provider";
 import {Button} from "@/components/ui/button";
-import {Send, SendHorizonal} from "lucide-react";
+import {SendHorizonal} from "lucide-react";
 
 
 const formSchema = z.object({
-  content: z.string().min(1),
+  content: z.string().trim().min(1),
 })
 
 
@@ -38,16 +35,17 @@ const ChatInput = () => {
       if (e.shiftKey){
         return;
       }
+      e.preventDefault();
       form.handleSubmit(onSubmit)();
     }
   };
 
-  const isLoading = form.formState.isSubmitting;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await chatContext.sendMessage(values.content);
-    form.reset();
-    setTimeout(fitToSize , 10);
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    if (chatContext.sendMessage(values.content)){
+      form.reset();
+      setTimeout(fitToSize , 10);
+    }
   }
 
   return (
@@ -65,8 +63,8 @@ const ChatInput = () => {
                       onInput={onInput}
                       onKeyDown={handleKeyDown}
                       {...field}
-                      disabled={isLoading}
                       rows={1}
+                      disabled={false}
                       ref={ref as any}
                       className="pl-2 pr-12 py-3 bg-zinc-200/90 dark:bg-zinc-700/75
                       border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0

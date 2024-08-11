@@ -7,11 +7,10 @@ import qs from "query-string";
 import axios from "axios";
 import {Message} from "@prisma/client";
 import {useInventory} from "@/components/providers/inventory-data-provider";
-import {count} from "effect/Sink";
 
 type ChatContext = {
   state: string;
-  sendMessage: (message: string) => Promise<boolean>;
+  sendMessage: (message: string) => boolean;
   isSendingMessage: boolean;
   canLoadMore: boolean;
   loadMore: () => void;
@@ -22,7 +21,7 @@ type ChatContext = {
 
 const chatContext = React.createContext<ChatContext>({
   state: "any",
-  sendMessage: async (message: string) => {return false;},
+  sendMessage: (message: string) => {return false;},
   isSendingMessage: false,
   canLoadMore: false,
   loadMore: () => {},
@@ -104,27 +103,27 @@ const ChatProvider = (
     });
   }
 
-  const removeLoadingMessage = () => {
-    mQueryClient.setQueryData(["chat"] , (oldData: any) => {
-      if (!oldData || !oldData.pages || oldData.pages.length == 0) {
-        return oldData;
-      }
-
-      const newData = [...oldData.pages];
-
-      newData[0].items = newData[0].items.filter((item: any) => {
-        return item.id != "";
-      })
-
-      console.log(newData[0].items);
-
-      return {
-        ...oldData,
-        pages: newData
-      };
-
-    });
-  }
+  // const removeLoadingMessage = () => {
+  //   mQueryClient.setQueryData(["chat"] , (oldData: any) => {
+  //     if (!oldData || !oldData.pages || oldData.pages.length == 0) {
+  //       return oldData;
+  //     }
+  //
+  //     const newData = [...oldData.pages];
+  //
+  //     newData[0].items = newData[0].items.filter((item: any) => {
+  //       return item.id != "";
+  //     })
+  //
+  //     console.log(newData[0].items);
+  //
+  //     return {
+  //       ...oldData,
+  //       pages: newData
+  //     };
+  //
+  //   });
+  // }
 
   const performTask = async (task: any) => {
     console.log("Performing Task: " + JSON.stringify(task));
@@ -171,10 +170,8 @@ const ChatProvider = (
     }
   }
 
-  const sendMessage = async (message: string) => {
-
+  const _sendMessageInternal = async (message: string) => {
     try {
-
       addMessageToQuery({
         role: "User",
         content: message,
@@ -184,7 +181,6 @@ const ChatProvider = (
         senderId: ""
       });
 
-      setIsSendingMessage(true);
 
       const url = qs.stringifyUrl({
         url: "/api/chat",
@@ -208,10 +204,34 @@ const ChatProvider = (
       return true;
     } catch (error){
       console.log(error);
-      removeLoadingMessage();
+      updateLoadingMessage({
+        role: "User",
+        content: message,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        id: "invalid",
+        senderId: ""
+      });
+      addMessageToQuery({
+        role: "AI",
+        content: "Failed to send message",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        id: "invalid",
+        senderId: ""
+      });
+      setIsSendingMessage(false);
+      return false;
     }
-    setIsSendingMessage(false);
-    return false;
+  }
+
+  const sendMessage = (message: string) => {
+    if (isSendingMessage){
+      return false;
+    }
+    setIsSendingMessage(true);
+    _sendMessageInternal(message);
+    return true;
   }
 
   return (

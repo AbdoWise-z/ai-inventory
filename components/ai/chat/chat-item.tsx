@@ -2,14 +2,11 @@
 
 import React, {useEffect, useState} from 'react';
 import { MessageRole } from "@prisma/client";
-import {format} from "date-fns";
 import {cn, delay} from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
-import {Check, ClipboardCopy, CopyIcon} from "lucide-react";
+import {Check, ClipboardCopy} from "lucide-react";
 import {Button} from "@/components/ui/button";
-
-const DATE_FORMAT = 'd MMM yyyy HH:mm';
-
+import {useChatResize} from "@/components/ai/chat/chat-area";
 
 interface ChatItemProps {
   content: string;
@@ -21,12 +18,13 @@ const ChatItem = (
   {
     content,
     role,
-    animate
+    animate,
   } : ChatItemProps
 ) => {
 
   const [dispContent, setDispContent] = useState("");
   const [Copy , setCopy] = useState(false);
+  const resize = useChatResize();
 
   const animateText = async () => {
     const words = content.split(" ");
@@ -40,12 +38,14 @@ const ChatItem = (
 
       setDispContent(str);
       await delay(20);
+      resize.TriggerSizeChanged();
     }
   }
   useEffect(() => {
     if (animate){
       animateText();
     }
+    resize.TriggerSizeChanged();
   }, []);
 
   const copyBtn = (
@@ -79,9 +79,9 @@ const ChatItem = (
         copyBtn
       }
     <div className={cn(
-      "relative group flex w-fit rounded-b-xl max-w-[calc(95% - 24px)]",
-      role == "AI" && "bg-neutral-200 rounded-tr-xl",
-      role == "User" && "bg-blue-200 rounded-tl-xl"
+      "relative group flex w-fit rounded-t-xl max-w-[calc(95% - 24px)] shadow-sm",
+      role == "AI" && "bg-neutral-200 rounded-br-xl",
+      role == "User" && "bg-blue-200 rounded-bl-xl"
     )}>
       <ReactMarkdown className={"w-full h-fit p-2"}>
         {animate ? dispContent : content}
