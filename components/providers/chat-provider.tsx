@@ -45,7 +45,8 @@ const ChatProvider = (
 
   const [isSendingMessage, setIsSendingMessage] = React.useState(false);
   const inventory = useInventory();
-
+  const [pendingTasks, setPendingTasks] = React.useState(([] as any[]));
+  const [currentTask, setCurrentTask] = React.useState(null as any);
 
   const addMessageToQuery = (m: Message) => {
     mQueryClient.setQueryData(["chat"] , (oldData: any) => {
@@ -125,21 +126,23 @@ const ChatProvider = (
     });
   }
 
-  const performTask = (task: any) => {
+  const performTask = async (task: any) => {
     console.log("Performing Task: " + JSON.stringify(task));
     if (task){
       if (task.action == 'add'){
         const name = task.itemName;
         const count = task.itemCount ?? 1;
-        inventory.addItem(name, count);
+        await inventory.addItem(name, count);
+        setCurrentTask(null);
       } else if (task.action == 'edit'){
         const name = task.itemName;
         const item = inventory.data.find((item: any) => item.name == name);
         if (item){
           const newCount = task.newCount ?? item?.count;
           const newName = task.newName ?? name;
-          inventory.editItem(`${item.id}` , newName , newCount);
+          await inventory.editItem(`${item.id}` , newName , newCount);
         }
+        setCurrentTask(null);
       } else if (task.action == 'remove'){
         const name = task.itemName;
         const item = inventory.data.find((item: any) => item.name == name);
@@ -147,20 +150,24 @@ const ChatProvider = (
           const dec = task.newCount ?? item.count;
           const newCount = item.count - dec;
           if (newCount <= 0){
-            inventory.deleteItem([item]);
+            await inventory.deleteItem([item]);
           } else {
-            inventory.editItem(`${item.id}` , name , newCount);
+            await inventory.editItem(`${item.id}` , name , newCount);
           }
         }
       } else {
-        if (!task.action){
-          for (const mTask of task){
-            performTask(mTask);
-          }
-        } else {
-          console.log("unknown task:" + task.action);
-        }
+        console.log("unknown task:" + task.action);
       }
+    }
+    setCurrentTask(null);
+  }
+
+  if (!currentTask){
+    if (pendingTasks.length > 0) {
+      const task = pendingTasks.pop();
+      setCurrentTask(task);
+      setPendingTasks(pendingTasks);
+      performTask(task);
     }
   }
 
@@ -192,7 +199,10 @@ const ChatProvider = (
       updateLoadingMessage(data.userMessage);
       addMessageToQuery(data.AiResponse);
 
-      performTask(data.task);
+      if (data.task){
+        pendingTasks.push(...(data.task))
+        setPendingTasks(pendingTasks);
+      }
 
       setIsSendingMessage(false);
       return true;

@@ -20,18 +20,18 @@ type InventoryDataProviderState = {
   data: StatfulInventoryItem[];
   state: InventoryDataProviderLoadingState;
   reloadData: () => void;
-  addItem: (name: string, count: number) => void;
-  deleteItem: (item: StatfulInventoryItem[]) => void;
-  editItem: (id: string , newName: string, newCount: number) => void;
+  addItem: (name: string, count: number) => Promise<void>;
+  deleteItem: (item: StatfulInventoryItem[]) => Promise<void>;
+  editItem: (id: string , newName: string, newCount: number) => Promise<void>;
 }
 
 const InventoryDataContext = React.createContext<InventoryDataProviderState>({
   data: [],
   state: InventoryDataProviderLoadingState.Loading,
   reloadData: () => {},
-  addItem: (name: string, count: number) => {},
-  deleteItem: (i) => {},
-  editItem: (i, n , c) => {},
+  addItem: async (name: string, count: number) => {},
+  deleteItem: async (i) => {},
+  editItem: async (i, n , c) => {},
 });
 
 export const useInventory = () => useContext(InventoryDataContext);

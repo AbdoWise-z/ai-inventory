@@ -109,15 +109,13 @@ export async function POST(req: Request, {
     }) ?? "AI generation failed, please try again";
 
     let aiResFinal = "";
-    let task = [];
+    let tasks = [];
     try {
-      const taskArray = JSON.parse(aiRes);
-      for (const mTask of taskArray) {
-        task.push(mTask.task);
-        aiResFinal += mTask.task_description + "\n\n";
-      }
+      const response = JSON.parse(aiRes);
+      tasks = response.tasks;
+      aiResFinal = response.response;
     } catch (e){
-      aiResFinal = aiRes;
+      aiResFinal = "*Internal Error* has happened, please try again";
     }
 
     const aiMessage = await db.message.create({
@@ -132,7 +130,7 @@ export async function POST(req: Request, {
       {
         userMessage: userMessage,
         AiResponse: aiMessage,
-        task: task,
+        task: tasks,
       }
     );
   } catch (error){
