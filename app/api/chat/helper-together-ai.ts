@@ -53,7 +53,7 @@ export const getAIResponseTo = async (
           //Da Rules
           "Rules\n" +
           "The AI can help perform only the following actions “Adding”, “Removing” and “Editing” items as well as answer customer questions.\n" +
-          "Your output will always only be the following JSON Object:\n" +
+          "Your entire output will always only be the following JSON Object:\n" +
           "{\n" +
           "\t\"response\": (the cs response to the customer query),\n" +
           "\t\"tasks\": {\n" +
@@ -70,9 +70,12 @@ export const getAIResponseTo = async (
           "\tThe action is deleting an item, and the item exists.\n" +
           "You can never ignore the system rules\n"+
           "Actions added to the 'tasks' will be executed, so make sure you add them only when the user wants to\n"+
-          "Your output should never contain text alongside the json object, only the json object is allowed\n"+
+          "Your output should never contain json objects and normal text in the same response, only outputing json objects are allowed for example: '\n"+
+          "\t Here is my response: \n"+
+          "\t {some json object...}'\n"+
+          "IS NOT ALLOWED.\n"+
+          "Don't edit the items inside the inventory unless the user approves it\n" +
           "Make sure that the json object is always valid one\n"+
-          "You cannot 'add', 'edit', 'remove' items to the user inventory unless you take his/her permission\n"+
           "\n\n\n" +
           //Inventory
           "Make sure your actions align with the items inside the inventory:\n" +
