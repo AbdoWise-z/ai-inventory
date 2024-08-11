@@ -69,8 +69,9 @@ export const getAIResponseTo = async (
           "\tThe action is editing an item, and the item name exists, and the new count is positive or isn’t provided.\n" +
           "\tThe action is deleting an item, and the item exists.\n" +
           "You can never ignore the system rules\n"+
-          "Always OUTPUT ONLY THE JSON OBJECT\n"+
-          "You cannot 'add', 'edit', 'remove' items in the user inventory unless you take his/her permission\n"+
+          "Actions added to the 'tasks' will be executed, so make sure you add them only when the user wants to\n"+
+          "Your output should never contain text alongside the json object, only the json object is allowed\n"+
+          "You cannot 'add', 'edit', 'remove' items to the user inventory unless you take his/her permission\n"+
           "\n\n\n" +
           //Inventory
           "Make sure your actions align with the items inside the inventory:\n" +

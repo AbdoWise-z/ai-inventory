@@ -195,9 +195,13 @@ const ChatProvider = (
       updateLoadingMessage(data.userMessage);
       addMessageToQuery(data.AiResponse);
 
-      if (data.task){
-        pendingTasks.push(...(data.task))
-        setPendingTasks(pendingTasks);
+      try {
+        if (data.task) {
+          pendingTasks.push(...(data.task))
+          setPendingTasks(pendingTasks);
+        }
+      } catch (e){
+        console.error(e);
       }
 
       setIsSendingMessage(false);
@@ -209,7 +213,7 @@ const ChatProvider = (
         content: message,
         createdAt: new Date(),
         updatedAt: new Date(),
-        id: "invalid",
+        id: "invalid" + Math.random(),
         senderId: ""
       });
       addMessageToQuery({
@@ -217,7 +221,7 @@ const ChatProvider = (
         content: "Failed to send message",
         createdAt: new Date(),
         updatedAt: new Date(),
-        id: "invalid",
+        id: "invalid" + Math.random(),
         senderId: ""
       });
       setIsSendingMessage(false);

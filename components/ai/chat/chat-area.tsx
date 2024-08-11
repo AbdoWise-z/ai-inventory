@@ -119,7 +119,7 @@ const ChatArea = () => {
         { (chatContext.isSendingMessage) && (
           <div className={"flex w-full group mt-2"}>
             <div className={cn(
-              "relative group flex w-fit rounded-b-xl max-w-[calc(95% - 24px)] bg-neutral-200 rounded-tr-xl justify-center px-2 py-2",
+              "relative group flex w-fit rounded-t-xl max-w-[calc(95% - 24px)] bg-neutral-200 rounded-br-xl justify-center px-2 py-2",
             )}>
               {/*<p className="mr-2 content-center">*/}
               {/*  AI is thinking*/}
