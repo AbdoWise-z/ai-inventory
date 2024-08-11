@@ -117,7 +117,7 @@ export async function POST(req: Request, {
     } catch (e){
       console.error(e);
       console.error(aiRes);
-      aiResFinal = "**Internal Error** has happened, please try again.";
+      aiResFinal = aiRes ?? "**Internal Error** has happened, please try again.";
     }
 
     const aiMessage = await db.message.create({
