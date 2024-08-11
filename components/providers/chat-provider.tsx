@@ -197,8 +197,10 @@ const ChatProvider = (
 
       try {
         if (data.task) {
-          pendingTasks.push(...(data.task))
-          setPendingTasks(pendingTasks);
+          setPendingTasks((v: any[]) => {
+            v.push(...(data.task))
+            return v;
+          });
         }
       } catch (e){
         console.error(e);

@@ -74,7 +74,7 @@ export async function POST(req: Request, {
       return new NextResponse("Unauthorized" , {status: 401});
     }
 
-    if (!content) {
+    if (!content || content.length > 200) {
       return new NextResponse("Invalid Params" , {status: 402});
     }
 

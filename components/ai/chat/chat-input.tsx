@@ -12,7 +12,7 @@ import {SendHorizonal} from "lucide-react";
 
 
 const formSchema = z.object({
-  content: z.string().trim().min(1),
+  content: z.string().trim().min(1).max(200),
 })
 
 

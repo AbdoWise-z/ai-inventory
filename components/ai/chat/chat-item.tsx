@@ -79,11 +79,11 @@ const ChatItem = (
         copyBtn
       }
     <div className={cn(
-      "relative group flex w-fit rounded-t-xl max-w-[calc(95% - 24px)] shadow-sm",
+      "relative group flex w-fit rounded-t-xl max-w-[calc(95% - 24px)] shadow-sm overflow-hidden",
       role == "AI" && "bg-neutral-200 rounded-br-xl",
       role == "User" && "bg-blue-200 rounded-bl-xl"
     )}>
-      <ReactMarkdown className={"w-full h-fit p-2"}>
+      <ReactMarkdown className={"w-full h-fit p-2 overflow-scroll"}>
         {animate ? dispContent : content}
       </ReactMarkdown>
     </div>
