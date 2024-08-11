@@ -5,14 +5,14 @@ import React from 'react';
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useAutoResize} from "@/hooks/use-auto-resize";
-import {Form, FormControl, FormField, FormItem} from "@/components/ui/form";
+import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
 import {useChatContext} from "@/components/providers/chat-provider";
 import {Button} from "@/components/ui/button";
 import {SendHorizonal} from "lucide-react";
 
 
 const formSchema = z.object({
-  content: z.string().trim().min(1).max(200),
+  content: z.string().trim().min(1 , "type at least one character.").max(512 , "message cannot exceed 512 characters."),
 })
 
 
@@ -72,7 +72,7 @@ const ChatInput = () => {
                       max-h-[300px]"
                       placeholder={`Message the AI`}
                     />
-
+                    <FormMessage/>
                     <div className="absolute right-2 top-2 py-[3px] pr-2 w-fit h-full">
                       <Button size={"icon"} variant={"ghost"} type={"submit"}>
                         <SendHorizonal />
